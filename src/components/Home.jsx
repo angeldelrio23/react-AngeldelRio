@@ -1,5 +1,6 @@
 import React from 'react';
 import { Container, Form, Button } from 'react-bootstrap';
+import { Usuario } from '../data/Usuarios';
 
 class Home extends React.Component {
   constructor(props) {
@@ -62,7 +63,7 @@ class Home extends React.Component {
                 <Form.Check type="checkbox" label="Recordarme" />
               </Form.Group>
               <Button variant="primary" type="button" onClick={this.login}>
-                Login
+                Entrar
               </Button>
             </Form>
           </Container>
