@@ -1,23 +1,41 @@
 import React from 'react';
 import { Container, Form, Button } from 'react-bootstrap';
-import { Usuario } from '../data/Usuarios';
+import { Usuarios } from '../data/Usuarios';
 
 class Home extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { user: '', password: '' };
+    this.state = { user: '', password: '', correo: '', nombre: '' };
     this.login = this.login.bind(this);
-    this.inputUser = React.createRef();
-    this.inputPassword = React.createRef();
   }
 
   login() {
-    this.setState({
-      user: this.inputUser.current.value,
-      password: this.inputPassword.current.value,
+    var encontrado = false;
+    Usuarios.map((item) => {
+      if (
+        item.correo === this.valorCorreo.value &&
+        item.contraseña === this.valorContraseña.value
+      ) {
+        this.setState({
+          user: item.usuario,
+          password: item.contraseña,
+          correo: item.correo,
+          nombre: item.nombre,
+        });
+        localStorage.setItem('user', item.usuario);
+        localStorage.setItem('password', item.contraseña);
+        localStorage.setItem('nombre', item.nombre);
+        localStorage.setItem('correo', item.correo);
+        localStorage.setItem('imagen', item.imagen);
+        encontrado = true;
+      }
     });
+    if (!encontrado) {
+      alert('El usuario o la contraseña son erróneos.');
+    }
   }
 
+  /*Se ejecuta la primera vez que se ejecuta el componente*/
   componentDidMount() {
     this.setState({
       user: localStorage.getItem('user'),
@@ -27,36 +45,36 @@ class Home extends React.Component {
 
   render() {
     if (
-      this.state !== null &&
-      this.state.user !== null &&
-      this.state.user !== ''
+      this.state != null &&
+      this.state.user != null &&
+      this.state.user != ''
     ) {
       return (
         <div className="main-site">
-          <h1>Bienvenido {this.state.user}!</h1>
+          <h1>¡Bienvenido {this.state.user}!</h1>
         </div>
       );
     } else {
       return (
         <div className="main-site">
-          <h1>Bienvenido!</h1>
+          <h1>¡Bienvenido!</h1>
           <Container>
             <Form>
               <Form.Group className="mb-3" controlId="formBasicEmail">
-                <Form.Label>Nombre de usuario o email: </Form.Label>
+                <Form.Label>Correo electrónico</Form.Label>
                 <Form.Control
                   type="email"
-                  placeholder="Usuario"
-                  ref={this.inputUser}
+                  placeholder="Correo electrónico"
+                  ref={(correo) => (this.valorCorreo = correo)}
                 />
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="formBasicPassword">
-                <Form.Label>Contraseña: </Form.Label>
+                <Form.Label>Contraseña</Form.Label>
                 <Form.Control
                   type="password"
                   placeholder="Contraseña"
-                  ref={this.inputPassword}
+                  ref={(contraseña) => (this.valorContraseña = contraseña)}
                 />
               </Form.Group>
               <Form.Group className="mb-3" controlId="formBasicCheckbox">
@@ -71,11 +89,5 @@ class Home extends React.Component {
       );
     }
   }
-
-  componentWillUnmount() {
-    localStorage.setItem('user', this.state.user);
-    localStorage.setItem('password', this.state.password);
-  }
 }
-
 export default Home;
